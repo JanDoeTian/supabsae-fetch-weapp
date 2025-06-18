@@ -1,8 +1,8 @@
 {
-    "name": "@supabase/node-fetch",
+    "name": "@supabase/node-fetch-weapp",
     "publishConfig": { "access": "public" },
-    "version": "2.6.7",
-    "description": "A light-weight module that brings window.fetch to node.js",
+    "version": "1.0.0",
+    "description": "A light-weight module that brings window.fetch to weapp",
     "main": "lib/index.js",
     "browser": "./browser.js",
     "files": [
