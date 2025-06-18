@@ -1,10 +1,9 @@
 "use strict";
 
 // ref: https://github.com/tc39/proposal-global
+import { fetch as fallbackFetch } from './fallback-fetch';
+
 var getGlobal = function() {
-    // the only reliable means to get the global object is
-    // `Function('return this')()`
-    // However, this causes CSP violations in Chrome apps.
     if (typeof self !== 'undefined') { return self; }
     if (typeof window !== 'undefined') { return window; }
     if (typeof global !== 'undefined') { return global; }
@@ -13,10 +12,15 @@ var getGlobal = function() {
 
 var globalObject = getGlobal();
 
-export const fetch = globalObject.fetch;
+const fetchImpl = globalObject.fetch || fallbackFetch;
 
-export default globalObject.fetch.bind(globalObject);
+export const fetch = fetchImpl;
 
-export const Headers = globalObject.Headers;
-export const Request = globalObject.Request;
-export const Response = globalObject.Response;
+// ✅ FIX: avoid calling bind on undefined
+export default typeof globalObject.fetch === 'function'
+  ? globalObject.fetch.bind(globalObject)
+  : fallbackFetch;
+
+export const Headers = globalObject.Headers || fallbackFetch.Headers;
+export const Request = globalObject.Request || fallbackFetch.Request;
+export const Response = globalObject.Response || fallbackFetch.Response;
